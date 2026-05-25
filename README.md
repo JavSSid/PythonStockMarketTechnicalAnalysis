@@ -40,9 +40,17 @@ bronze.index ──► silver.index ──► gold.moving_crossovers
 
 ## Dashboard Views
 
-- **Sector Overview** — daily returns by sector, cumulative trends, top/bottom performers
-- **Symbol Deep Dive** — OHLC candlestick + 4 moving averages + volume + crossover signals
-- **Volatility Monitor** — ranked monthly volatility vs return for all stocks
+### Sector Overview
+![Sector Overview](docs/sector_overview.png)
+Daily returns by sector, cumulative trends, top/bottom gainers/losers.
+
+### Symbol Deep Dive
+![Symbol Deep Dive](docs/symbol_deep_dive.png)
+Interactive OHLC candlestick with 4 moving average overlays (7/21/50/200-day), volume bars, and crossover signals.
+
+### Volatility Monitor
+![Volatility Monitor](docs/volatility_monitor.png)
+Monthly volatility rankings with volatility-vs-return scatter plot.
 
 ## Data
 
