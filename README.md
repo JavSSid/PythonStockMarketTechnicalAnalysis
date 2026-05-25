@@ -1,6 +1,7 @@
 # S&P 500 Stock Market Technical Analysis
 
 End-to-end data engineering pipeline that processes S&P 500 stock data from raw ingestion through cleaning, enrichment, and aggregation, surfaced via an interactive dashboard.
+Goal: Create a dashboard for Short-Term Trading Analysis focusing on Price Trends, Volume, Chart Patterns and Moving Avergaes.
 
 ## Architecture
 
@@ -36,14 +37,6 @@ bronze.index ──► silver.index ──► gold.moving_crossovers
 └── requirements.txt
 ```
 
-## Quick Start
-
-```bash
-pip install -r requirements.txt
-python scripts/backfill.py     # run full pipeline
-streamlit run dashboard.py     # launch dashboard at :8501
-make airflow-up                # start Airflow (optional)
-```
 
 ## Dashboard Views
 
