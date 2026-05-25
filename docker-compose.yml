@@ -1,0 +1,65 @@
+version: "3.8"
+
+services:
+  airflow-db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: airflow
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+    ports:
+      - "5433:5432"
+    volumes:
+      - airflow_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U airflow"]
+      interval: 5s
+      retries: 5
+
+  airflow:
+    image: apache/airflow:2.10.4
+    depends_on:
+      airflow-db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-db/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "true"
+      STOCK_DB_HOST: host.docker.internal
+      STOCK_DB_PORT: "5432"
+      STOCK_DB_NAME: sp500_db
+      STOCK_DB_USER: postgres
+      STOCK_DB_PASSWORD: babyLEMON
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./sql:/opt/airflow/sql
+      - ./scripts:/opt/airflow/scripts
+    entrypoint: >
+      bash -c "
+        airflow db init &&
+        airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com 2>/dev/null || true &&
+        airflow webserver &
+        airflow scheduler
+      "
+
+  metabase:
+    image: metabase/metabase:v0.53.3
+    ports:
+      - "3000:3000"
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: metabase
+      MB_DB_HOST: airflow-db
+      MB_DB_PORT: "5432"
+      MB_DB_USER: airflow
+      MB_DB_PASS: airflow
+    depends_on:
+      airflow-db:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  airflow_db_data:
